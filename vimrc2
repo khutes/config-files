@@ -1,0 +1,98 @@
+
+
+
+call plug#begin('~/.vim/plugged')
+
+" fzf fuzzy finder
+ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+ Plug 'junegunn/fzf.vim'
+
+" lightline
+ Plug 'itchyny/lightline.vim'
+
+" multiple cursors
+ Plug 'terryma/vim-multiple-cursors'
+
+" NerdTree
+ Plug 'preservim/nerdtree'
+
+" Tender Colorscheme
+ Plug 'jacoborus/tender.vim'
+
+
+
+call plug#end()
+
+" key mappings
+" ------------------------------------------
+        " fzf
+        map ; :Files<CR>
+        " NerdTree
+        map <C-o> :NERDTreeToggle<CR>
+
+
+
+" color settings
+" -----------------------------------------
+
+"if !has('gui_running')
+"    set t_Co=256
+"endif
+"
+"if &term =~ '256color'
+"    set t_ut=
+" endif
+
+set number
+colorscheme molokai
+hi LineNr guibg=red
+
+let g:lightline = { 'colorscheme': 'tender' }
+
+" let g:molokai_original = 1
+
+
+let g:go_version_warning = 0
+execute pathogen#infect()
+syntax on
+filetype plugin indent on
+set sessionoptions=buffers
+set sessionoptions-=options
+set autowrite
+set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+set hlsearch
+set cursorline
+set laststatus=2
+map <C-n> :cnext<CR>
+map <C-m> :cprevious<CR>
+nnoremap <leader>a :cclose<CR>
+autocmd FileType go nmap <leader>t <Plug>(go-test)
+autocmd FileType go nmap <leader>r <Plug>(go-run)
+
+" set expandtab
+ "set tabstop=4
+" set shiftwidth=4
+" map <F2> :retab <CR> :wq! <CR>
+
+" run :GoBuild or :GoTestCompile based on the go file
+function! s:build_go_files()
+  let l:file = expand('%')
+  if l:file =~# '^\f\+_test\.go$'
+    call go#test#Test(0, 1)
+  elseif l:file =~# '^\f\+\.go$'
+    call go#cmd#Build(0)
+  endif
+endfunction
+
+autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+autocmd FileType go nmap <leader>d <Plug>(go-doc)
+autocmd FileType go set tabstop=4 shiftwidth=4 softtabstop=0 noexpandtab nowrap preserveindent copyindent
+let mapleader = ","
+
+" run gofmt on each save
+autocmd BufWritePost *.go !gofmt -w %
+com! FormatXML :%!python3 -c "import xml.dom.minidom, sys; print(xml.dom.minidom.parse(sys.stdin).toprettyxml())"
+
+nnoremap = :FormatXML<Cr>
+
+:set backspace=indent,eol,start
