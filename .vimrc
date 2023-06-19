@@ -2,23 +2,6 @@
 
 syntax enable
 
-" vim plug plugins
-
-call plug#begin('~/.vim/plugged')
-
-" colorscheme
-Plug 'jacoborus/tender.vim'
-
-Plug 'maksimr/vim-jsbeautify'
-
-
-
-call plug#end()
-
-
-
-
-
 " color settings
 
  if(has("termguicolors"))
